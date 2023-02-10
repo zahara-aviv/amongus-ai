@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dbController = require('../controllers/dbController.js');
 const cookieController = require('../controllers/cookieController.js');
+
 router.get('/messages', dbController.getMessages, (req, res) => {
   return res.status(200).json({ messages: res.locals.messages });
 });
@@ -27,8 +28,22 @@ router.get(
   cookieController.verifySsidCookie,
   dbController.getUserBySsid,
   (req, res) => {
-    const { user_id } = res.locals;
-    return res.status(200).json({ user_id: user_id });
+    const {
+      user_id,
+      user_avatar,
+      user_name,
+      user_firstname,
+      user_lastname,
+      user_email,
+    } = res.locals;
+    return res.status(200).json({
+      user_id: user_id,
+      avatar: user_avatar,
+      user_name: user_name,
+      user_firstname: user_firstname,
+      user_lastname: user_lastname,
+      user_email: user_email,
+    });
   }
 );
 

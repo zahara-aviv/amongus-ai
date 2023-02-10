@@ -12,3 +12,27 @@ module.exports = {
     return pool.query(text, params, callback);
   },
 };
+
+/*
+ CREATE TABLE users (
+     user_id SERIAL PRIMARY KEY,
+    username character varying(50),
+     password character varying(100),
+     email character varying(255),
+     first_name character varying(50),
+     last_name character varying(50),
+     avatar character varying(255),
+    oath_token character varying (255),
+    points integer,
+   ssid character varying(255)
+)
+
+CREATE TABLE messages (
+     message_id SERIAL PRIMARY KEY,
+    sender_id integer,
+     time TIMESTAMP NOT NULL DEFAULT NOW(),
+     message character varying(5000),
+   FOREIGN KEY (sender_id) REFERENCES users(user_id)
+)
+
+*/

@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const Login = () => {
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+const Login = ({ button }) => {
   // Set state
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  console.log('button: ', button);
 
   // Handler to set state of controlled input elements
   const handleInput = (e) => {
@@ -40,23 +46,38 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login">
-        <h2>LOGIN</h2>
-        <input
-          name="username"
-          placeholder="username"
-          value={username}
-          onChange={handleInput}
-        ></input>
-        <input
-          name="password"
-          placeholder="password"
-          value={password}
-          onChange={handleInput}
-        ></input>
-        <button onClick={handleSubmit}>Login</button>
+        <h2>
+          <strong>Login</strong>
+        </h2>
+        <Form>
+          <Form.Group className="mb-3" controlId="username">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Username"
+              name="username"
+              value={username}
+              onChange={handleInput}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              id="passwordInput"
+              name="password"
+              value={password}
+              onChange={handleInput}
+            />
+          </Form.Group>
+          <Button variant="dark" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </Form>
         <hr />
         <p>Don't have an account?</p>
-        <a href="/signup">Sign up!</a>
+        <Link to="/signup">Sign up</Link>
       </div>
     </div>
   );

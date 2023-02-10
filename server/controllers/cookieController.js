@@ -17,7 +17,7 @@ const createErr = (errObj) => {
 cookieController.setSsidCookie = (req, res, next) => {
   try {
     const { ssid } = res.locals;
-    res.cookie('ssid', ssid, { httpOnly: true });
+    res.cookie('ssid', ssid, { httpOnly: false });
     return next();
   } catch (error) {
     return next(
@@ -33,9 +33,9 @@ cookieController.setSsidCookie = (req, res, next) => {
 cookieController.getSsidCookie = (req, res, next) => {
   try {
     const { ssid } = req.cookies;
-
+    console.log('ssid: ', ssid);
     if (!ssid) {
-      res.redirect('/login');
+      return res.json({ isAuthenticated: false });
     }
 
     res.locals.ssid = ssid;
@@ -67,9 +67,11 @@ cookieController.verifySsidCookie = async (req, res, next) => {
       console.log('cookie verified!');
       return next();
     } else {
-      res.locals.isValidSession = false;
+      // res.locals.isValidSession = false;
       console.log('cookie INVALID!');
-      res.status(302).redirect('./login');
+      // res.status(302).redirect('http:localhost:8080/login');
+      return res.json({ isAuthenticated: false });
+
       return;
       // return next(
       //   createErr({

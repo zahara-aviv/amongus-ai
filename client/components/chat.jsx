@@ -1,30 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 
+import Message from './Message';
+import Navigation from './Navbar';
+
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+
 const socket = io();
 
-const Chat = () => {
-  // Set initial states
+const Chat = (props) => {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [senderId, setSenderId] = useState(null);
+  const [senderAvatar, setSenderAvatar] = useState(null);
 
-  // Handler to update state of controlled input
-  const handleMessageInput = (e) => setMessageInput(e.target.value);
-
-  // Handler to create a new message
-  const handleMessageSend = () => {
-    socket.emit('send-message', { sender_id: senderId, message: messageInput });
-    setMessageInput('');
-  };
-
-  // On mount fetch sender id and all messages from db
   useEffect(() => {
     const fetchAndSetSenderId = async () => {
       try {
         const response = await fetch('/api/user_id'); // update endpoint when ready
         const userId = await response.json();
         setSenderId(userId.user_id); // update properties to match up if needed
+        setSenderAvatar(userId.avatar);
       } catch (err) {
         console.log(err);
       }
@@ -49,47 +46,70 @@ const Chat = () => {
     fetchAllMessages();
   }, []);
 
+  const messageElementList = messages.map((message) => (
+    <Message
+      key={message.message_id}
+      message={message}
+      avatar={message.avatar}
+    />
+  ));
+
+  // Handler to update state of controlled input
+  const handleMessageInput = (e) => setMessageInput(e.target.value);
+
+  // Handler to create a new message
+  const handleMessageSend = () => {
+    socket.emit('send-message', {
+      sender_id: senderId,
+      message: messageInput,
+      avatar: senderAvatar,
+    });
+    setMessageInput('');
+  };
+
   // Receive new messages
   socket.on('receive-message', (message) => {
-    setMessages([...messages, message]);
+    if (message.message) {
+      setMessages([...messages, message]);
+    }
   });
 
-  // Create list of message elements to render
-  const messageElementList = messages.map((message) => {
-    const dateTime = new Date(message.time);
+  const handleCastVote = () => {
+    socket.emit('cast-a-vote');
+    setMessageInput('');
+  };
 
-    return (
-      <div key={message.message_id} className="message">
-        <span className="message-user">{message.username}</span>
-        <span className="message-message">{message.message}</span>
-        <span className="message-timestamp">
-          {dateTime.toLocaleTimeString()}
-        </span>
-      </div>
-    );
-  });
+  socket.on('current-players', (message) => {});
 
-  // Render chatroom elements
   return (
-    <div className="chatroom">
-      <h1>AI-mong Us</h1>
+    <>
+      <Navigation
+        senderAvatar={senderAvatar}
+        setSenderAvatar={setSenderAvatar}
+      />
+      <div className="chatroom">
+        <div className="messages">
+          <div>{messageElementList}</div>
+        </div>
 
-      <div className="messages">
-        <div>{messageElementList}</div>
+        <div className="message-input">
+          <Form.Control
+            placeholder="Say something to the chat..."
+            value={messageInput}
+            onChange={handleMessageInput}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleMessageSend();
+            }}
+          />
+          <Button variant="dark" onClick={handleMessageSend}>
+            Send
+          </Button>
+        </div>
+        <Button variant="secondary" onClick={handleCastVote}>
+          Cast a Vote!
+        </Button>
       </div>
-
-      <div className="message-input">
-        <input
-          placeholder="Say something to the chat..."
-          value={messageInput}
-          onChange={handleMessageInput}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleMessageSend();
-          }}
-        ></input>
-        <button onClick={handleMessageSend}>Send</button>
-      </div>
-    </div>
+    </>
   );
 };
 

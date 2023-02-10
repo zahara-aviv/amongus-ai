@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const Signup = () => {
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import InputGroup from 'react-bootstrap/InputGroup';
+
+const Signup = (props) => {
   // Set state
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -11,6 +16,13 @@ const Signup = () => {
   const [isEmailValid, setEmailValidity] = useState(true);
   const [isPasswordValid, setPasswordValidity] = useState(true);
   const [isUsernameValid, setUsernameValidity] = useState(true);
+  //setting state to take in file from users computer
+  // const [file, setFile] = useState(null);
+
+  //Handler to set state to a file that the user will input
+  // const handleFileChange = (e) => {
+  //   setFile(e.target.files[0]);
+  // };
 
   // Handler to set state of controlled input elements
   const handleInput = (e) => {
@@ -20,6 +32,10 @@ const Signup = () => {
     if (e.target.name === 'email') setEmail(e.target.value);
     if (e.target.name === 'password') setPassword(e.target.value);
     if (e.target.name === 'avatar') setAvatar(e.target.value);
+    console.log('e.target.name:', e.target.name);
+    console.log('e.target.value:', e.target.value);
+
+    // if (e.target.name === 'avatar') setAvatar(e.target.files[0]);
   };
 
   // Handler to toggle password visibility
@@ -34,6 +50,7 @@ const Signup = () => {
 
   // Handler to send request to to create user
   const handleSubmit = async () => {
+    console.log('handleSubmit');
     // Helper function to handle data validation for email
     const validateEmail = (email) => {
       const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$/; // must be valid email format
@@ -64,7 +81,13 @@ const Signup = () => {
     const usernamevalidity = validateUsername(username);
     const passwordvalidity = validatePassword(password);
 
+    console.log('emailvalidity:', emailvalidity);
+    console.log('usernamevalidity:', usernamevalidity);
+    console.log('passwordvalidity:', passwordvalidity);
+    console.log('password:', password);
+
     if (emailvalidity && usernamevalidity && passwordvalidity) {
+      console.log('inside of if statement');
       try {
         const response = await fetch('/signup', {
           method: 'POST',
@@ -80,6 +103,8 @@ const Signup = () => {
             avatar,
           }),
         });
+
+        console.log('response:', response);
         if (response.status === 200) {
           window.location = '/';
         } else {
@@ -93,7 +118,124 @@ const Signup = () => {
   };
 
   // Render component
+  //////This is what the avatar render looked like
+  {
+    /* <input
+name="avatar"
+type="text"
+placeholder="avatar (image link)"
+value={avatar}
+onChange={handleInput}
+/> */
+  }
+  //////
+
   return (
+    <div className="signup-container">
+      <div className="signup">
+        <h2>
+          <strong>Sign-Up Today!</strong>
+        </h2>
+        <h6>It's a(i) lot of fun!</h6>
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter first name"
+              name="first-name"
+              value={firstName}
+              onChange={handleInput}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter last name"
+              name="last-name"
+              value={lastName}
+              onChange={handleInput}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Username"
+              name="username"
+              value={username}
+              onChange={handleInput}
+            />
+            <Form.Text className="text-muted">
+              Username must be between 3 and 25 characters
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              name="email"
+              value={email}
+              onChange={handleInput}
+            />
+            <Form.Text className="text-muted">
+              We'll never share your email with anyone else.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              id="passwordInput"
+              name="password"
+              value={password}
+              onChange={handleInput}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Avatar URL</Form.Label>
+            {/* <InputGroup className="mb-3>"> */}
+            <Form.Control
+              type="text"
+              placeholder="Enter URL for Avatar"
+              id="avatarInput"
+              name="avatar"
+              value={avatar}
+              onChange={handleInput}
+            />
+            {/* </InputGroup> */}
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Check
+              type="checkbox"
+              label="Sign-up to be the first to hear about updates!"
+            />
+          </Form.Group>
+          <Button variant="dark" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </Form>
+
+        <p>
+          Already a user? <Link to="/login">Login</Link>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default Signup;
+
+/*
     <div className="login-container">
       <div className="login">
         <h2>SIGN UP</h2>
@@ -169,7 +311,7 @@ const Signup = () => {
 
         <input
           name="avatar"
-          type="text"
+          type="file"
           placeholder="avatar (image link)"
           value={avatar}
           onChange={handleInput}
@@ -180,11 +322,8 @@ const Signup = () => {
         <hr />
 
         <p>
-          Already a user? <a href="/login">Login!</a>
+          Already a user? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>
-  );
-};
-
-export default Signup;
+*/

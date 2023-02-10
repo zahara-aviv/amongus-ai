@@ -13,17 +13,19 @@ const aiController = {};
 aiController.getAiMessage = async () => {
   try {
     const query = 'SELECT * FROM messages';
-    const data = await db.query(query);
-
-    const messages = data.rows.slice(-11, -1).map((message) => message.message);
+    //const data = await db.query(query);
+    //this is the new query that limits messages gathered
+    const query2 = 'SELECT * FROM messages ORDER BY message_id DESC LIMIT 10';
+    const data2 = await db.query(query2);
+    // const messages = data2.rows
+    //   .slice(-11, -1)
+    //   .map((message) => message.message);
 
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: `Given this array of messages that have been sent in an online chatroom: ${messages}. 
+      prompt: `Given this array of messages that have been sent in an online chatroom: ${data2}. 
         Write a single message to add to chatroom. The message should be no more than one short sentence, 
-        have limited punctuation, and use hip abbreviations. Do not send any greetings. Instead, justask questions, or say funny 
-        or random things.
-        `,
+        have limited punctuation, and use hip abbreviations. Do not send any greetings. Instead, just ask questions, or say funny or random things.`,
       max_tokens: 30,
       temperature: 0.5,
     });

@@ -28,7 +28,6 @@ userController.verifyUsername = async (req, res, next) => {
         createErr({
           method: 'verifyUsername',
           type: 'Username in body is invalid',
-          err: err,
         })
       );
 
@@ -45,7 +44,6 @@ userController.verifyUsername = async (req, res, next) => {
         createErr({
           method: 'verifyUsername',
           type: 'Username not found in DB',
-          err: err,
         })
       );
     }
@@ -158,8 +156,9 @@ userController.encryptPassword = async (req, res, next) => {
 };
 
 userController.getUserInfoFromBody = (req, res, next) => {
-  const { username, password, email } = req.body;
-  res.locals = { username, password, email };
+  const { username, password, email, avatar, first_name, last_name } = req.body;
+  res.locals = { username, password, email, avatar, first_name, last_name };
+  console.log('this is from getuserinfofrombody', res.locals);
   return next();
 };
 

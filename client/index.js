@@ -1,10 +1,11 @@
+import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import Chat from './components/chat.jsx';
 import './stylesheets/chat.scss';
+import './stylesheets/login.scss';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import ReactDOM from 'react-dom';
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// import { io } from 'socket.io-client';
-// const socket = io();
-
-const root = createRoot(document.getElementById('root'));
-root.render(<Chat />);
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
