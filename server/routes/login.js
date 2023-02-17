@@ -4,6 +4,7 @@ const router = express.Router();
 const dbController = require('../controllers/dbController.js');
 const cookieController = require('../controllers/cookieController.js');
 const userController = require('../controllers/userController.js');
+const kafkaController = require('../controllers/kafkaController.js');
 
 router.post(
   '/',
@@ -13,6 +14,7 @@ router.post(
   userController.generateSession,
   dbController.storeSsid,
   cookieController.setSsidCookie,
+  kafkaController.setup,
   // (req, res) => res.json({ authenticated: true })
   (req, res) => res.redirect('http://localhost:8080/')
 );

@@ -36,3 +36,54 @@ CREATE TABLE messages (
 )
 
 */
+// class PostgresSourceSelect {
+//   async init() {
+//       // TODO: Create your postgres credential
+//       // More info at https://yepcode.io/docs/integrations/postgres/#credential-configuration
+//       this.postgresPool = yepcode.integration.postgres(
+//           "your-postgres-credential-name"
+//       );
+//   }
+
+//   async fetch(publish, done) {
+//       // TODO: Customize your sql query
+//       const {
+//           rows
+//       } = await this.postgresPool.query(
+//           "SELECT * FROM your_schema.your_table LIMIT 10"
+//       );
+//       for (const row of rows) {
+//           await publish(row);
+//       }
+//       done();
+//   }
+
+//   async close() {
+//       await this.postgresPool.end();
+//   }
+// }
+
+// class KafkaTargetSendMessage {
+//   async init() {
+//       // TODO: Create your kafka credential
+//       // More info at https://yepcode.io/docs/integrations/kafkajs/#credential-configuration
+//       const kafka = yepcode.integration.kafkajs("your-kafka-credential-name");
+//       this.producer = kafka.producer();
+//       await this.producer.connect();
+//   }
+
+//   async consume(item) {
+//       // TODO: customize your message and topic
+//       const message = `Your message content ${item.name}`;
+//       await this.producer.send({
+//           topic: "your-topic",
+//           messages: [{
+//               value: message
+//           }],
+//       });
+//   }
+
+//   async close() {
+//       await this.producer.disconnect();
+//   }
+// }
