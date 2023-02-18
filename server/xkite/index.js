@@ -9,35 +9,39 @@ const defaultCfg = {
 };
 
 module.exports = class Kite {
+  /**
+   * constructor()
+   * @param {Object} config : takes the configuration
+   *                 for KITE standalone servers.
+   */
   constructor(config = defaultCfg) {
-    this.config = config;
+    this.config = JSON.parse(JSON.stringify(config));
     // launch configuration
     try {
       this.setup = ymlGenerator(config);
       zipper.sync
-        .zip(path.join(__dirname, './config/download/'))
+        .zip(path.join(__dirname, './download/'))
         .compress()
-        .save(path.join(__dirname, './config/download/pipeline.zip'));
-      compose
-        .upAll({
-          cwd: path.join(__dirname, './config/download/'),
-          log: true,
-        })
-        .then(
-          () => {
-            console.log('Clusters successfully built');
-          },
-          (err) => {
-            console.log('Something went wrong:', err.message);
-            throw err;
-          }
-        );
+        .save(path.join(__dirname, './download/pipeline.zip'));
+      // console.log('done zipping...');
     } catch (err) {
       console.log(`KITE failed to initialize: ${err}\nConfiguration ${config}`);
     }
   }
-  /*
-   * returns an object with the following formatting.
+  /**
+   * build():
+   * @returns {Promise} from docker-compose
+   */
+  async build() {
+    // console.log('building...');
+    return compose.upAll({
+      cwd: path.join(__dirname, './download/'),
+      log: true,
+    });
+  }
+  /**
+   *
+   * @returns {Object} setup with the following formatting.
    * {
    * dataSetup: {
    *  dbSrc: String,
@@ -54,6 +58,6 @@ module.exports = class Kite {
    * }}
    */
   getSetup() {
-    return this.config;
+    return this.setup;
   }
 };

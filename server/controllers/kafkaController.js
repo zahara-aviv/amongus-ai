@@ -4,7 +4,10 @@ const Kite = require('../xkite');
 module.exports = {
   setup: async (req, res, next) => {
     const kite = new Kite();
+    await kite.build();
+    console.log(kite.getSetup());
     const { dbSetup, kafkaSetup } = kite.getSetup();
+    console.log(kafkaSetup);
     const topic = 'messages';
     const kafka = new Kafka({
       clientId: 'chat-gui',

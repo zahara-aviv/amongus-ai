@@ -14,7 +14,7 @@ router.post(
   userController.generateSession,
   dbController.storeSsid,
   cookieController.setSsidCookie,
-  kafkaController.setup,
+  kafkaController.setup, // FOR TEST
   // (req, res) => res.json({ authenticated: true })
   (req, res) => res.redirect('http://localhost:8080/')
 );
